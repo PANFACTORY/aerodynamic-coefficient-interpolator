@@ -2,7 +2,10 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[python]": {
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": null
+        "editor.defaultFormatter": null,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
     },
     "python.formatting.provider": "black",
     "python.formatting.blackPath": "${workspaceFolder}/venv/Scripts/black.exe",
