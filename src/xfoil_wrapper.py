@@ -3,7 +3,7 @@ import os
 from subprocess import DEVNULL, PIPE, Popen
 from tempfile import TemporaryDirectory
 
-from pandas import DataFrame, read_csv
+from pandas import DataFrame, concat, read_csv
 
 
 class XFoilWrapper:
@@ -17,7 +17,9 @@ class XFoilWrapper:
         """
         self.__xfoil_path = xfoil_path
 
-    def analyze(self, df_foil: DataFrame, amin: float, amax: float, da: float, re: float) -> DataFrame:
+    def analyze(
+        self, df_foil: DataFrame, amin: float, amax: float, da: float, remin: float, remax: float, dre: float
+    ) -> DataFrame:
         """二次元翼解析メソッド.
 
         Args:
@@ -25,7 +27,9 @@ class XFoilWrapper:
             amin (float): 最小迎角
             amax (float): 最大迎角
             da (float): 迎角ステップサイズ
-            re (float): レイノルズ数
+            remin (float): 最小レイノルズ数
+            remax (float): 最大レイノルズ数
+            dre (float): レイノルズ数ステップサイズ
 
         Returns:
             DataFrame: 迎角毎の空力係数のデータフレーム
@@ -33,29 +37,45 @@ class XFoilWrapper:
         with TemporaryDirectory() as td:
             XFoilWrapper.dump_foil(os.path.join(td, "foil.dat"), "", df_foil)
 
-            xfoil = Popen(self.__xfoil_path, stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, text=True)
-            xfoil.stdin.write(f'load {os.path.join(td, "foil.dat")}\n')
-            xfoil.stdin.write("oper\n")
-            xfoil.stdin.write("iter 100\n")
-            xfoil.stdin.write("Type 3\n")
-            xfoil.stdin.write("visc\n")
-            xfoil.stdin.write(f"{re}\n")
-            xfoil.stdin.write("pacc\n")
-            xfoil.stdin.write(f'{os.path.join(td, "tmp.out")}\n')
-            xfoil.stdin.write("\n")
-            xfoil.stdin.write(f"aseq {amin} {amax} {da}\n")
-            xfoil.stdin.write("\n")
-            xfoil.stdin.write("quit\n")
-            xfoil.stdin.close()
-            xfoil.wait()
+            df_result = DataFrame(data=[], columns=["alpha", "Re", "CL", "CD", "CDp", "CM", "Top_Xtr", "Bot_Xtr"])
 
-            return read_csv(
-                os.path.join(td, "tmp.out"),
-                delim_whitespace=True,
-                skiprows=12,
-                header=None,
-                names=["alpha", "CL", "CD", "CDp", "CM", "Top_Xtr", "Bot_Xtr"],
-            )
+            for i in range(int((remax - remin) / dre) + 1):
+                re = remin + dre * i
+
+                xfoil = Popen(self.__xfoil_path, stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, text=True)
+                xfoil.stdin.write("plop\n")
+                xfoil.stdin.write("gf\n")
+                xfoil.stdin.write("\n")
+                xfoil.stdin.write(f'load {os.path.join(td, "foil.dat")}\n')
+                xfoil.stdin.write("oper\n")
+                xfoil.stdin.write("iter 100\n")
+                xfoil.stdin.write("Type 3\n")
+                xfoil.stdin.write("visc\n")
+                xfoil.stdin.write(f"{re}\n")
+                xfoil.stdin.write("pacc\n")
+                xfoil.stdin.write(f'{os.path.join(td, f"tmp_{i}.out")}\n')
+                xfoil.stdin.write("\n")
+                xfoil.stdin.write(f"aseq {amin} {amax} {da}\n")
+                xfoil.stdin.write("\n")
+                xfoil.stdin.write("quit\n")
+                xfoil.stdin.close()
+                xfoil.wait()
+
+                df_result = concat(
+                    [
+                        df_result,
+                        read_csv(
+                            os.path.join(td, f"tmp_{i}.out"),
+                            delim_whitespace=True,
+                            skiprows=12,
+                            header=None,
+                            names=["alpha", "CL", "CD", "CDp", "CM", "Top_Xtr", "Bot_Xtr"],
+                        ).assign(Re=re),
+                    ],
+                    ignore_index=True,
+                )
+
+            return df_result
 
     def mix(self, df_foil_root: DataFrame, df_foil_tips: DataFrame, ratio: float) -> DataFrame:
         """翼型混合メソッド.
