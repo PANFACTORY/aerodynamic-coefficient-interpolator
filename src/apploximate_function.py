@@ -6,14 +6,14 @@ from pandas import DataFrame
 def fit_alpha_re_15(df: DataFrame) -> DataFrame:
     """空力係数近似関数.
 
-    f(x)=a0 + a1α + a2α^2 + a3α^3 + a4α^4 + a5α^5 + a6α^6 + a7Re + a8Re^2
-         + a9Re^3 + a10Re^4 + a11Re^5 + a12(1/lnRe) + a13√|α| + a14(α/Re)
+    f(x)=a0 + a1a + a2a^2 + a3a^3 + a4a^4 + a5a^5 + a6a^6 + a7Re + a8Re^2
+         + a9Re^3 + a10Re^4 + a11Re^5 + a12(1/lnRe) + a13sqrt|a| + a14(a/Re)
 
     Args:
-        df (DataFrame): _description_
+        df (DataFrame): 空力係数のデータフレーム
 
     Returns:
-        DataFrame: _description_
+        DataFrame: 空力係数近似関数の係数のデータフレーム
     """
     df_base = df[["alpha"]].copy()
     df_base.insert(loc=0, column="const", value=1.0)

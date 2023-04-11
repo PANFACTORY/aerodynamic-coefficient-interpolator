@@ -4,8 +4,8 @@ import sys
 
 from dotenv import load_dotenv
 
-from .apploximate_function import fit_alpha_re_15
-from .xfoil_wrapper import XFoilWrapper
+from src.apploximate_function import fit_alpha_re_15
+from src.xfoil_wrapper import XFoilWrapper
 
 load_dotenv()
 
