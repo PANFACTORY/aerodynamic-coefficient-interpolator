@@ -53,3 +53,6 @@ RE_STEP=100000
 ### Pythonパッケージ
 - [pandas](https://pandas.pydata.org/)
 - [numpy](https://numpy.org/)
+
+## ライセンス
+- [BSD 3](LICENSE)
