@@ -95,6 +95,8 @@ class XFoilWrapper:
             XFoilWrapper.dump_foil(os.path.join(td, "foil_tips.dat"), "", df_foil_tips)
 
             xfoil = Popen(self.__xfoil_path, stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, text=True)
+            if xfoil.stdin is None:
+                raise Exception("Popen.stdin for XFoil is None.")
             xfoil.stdin.write("inte\n")
             xfoil.stdin.write("f\n")
             xfoil.stdin.write(f'{os.path.join(td, "foil_root.dat")}\n')
