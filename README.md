@@ -2,13 +2,14 @@
 空力係数補間プログラム
 
 ## セットアップ
-事前に`XFoil`をインストールしておいてください。
+事前に`XFoil`をインストールしておいてください。  
+[リリースページ](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/releases)から`interpolator-<version>.exe`をダウンロードしてください。
 
 ## 実行方法
 以下のコマンドを実行してください。
 
 ```
-$ interpolator path/to/root_foil.dat path/to/tips_foil.dat path/to/out.csv
+$ interpolator-<version> path/to/root_foil.dat path/to/tips_foil.dat path/to/out.csv
 ```
 
 実行時引数の意味は以下の通りです。
