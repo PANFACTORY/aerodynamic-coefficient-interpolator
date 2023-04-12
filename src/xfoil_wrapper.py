@@ -43,6 +43,8 @@ class XFoilWrapper:
                 re = remin + dre * i
 
                 xfoil = Popen(self.__xfoil_path, stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, text=True)
+                if xfoil.stdin is None:
+                    raise Exception("Popen.stdin for XFoil is None.")
                 xfoil.stdin.write("plop\n")
                 xfoil.stdin.write("gf\n")
                 xfoil.stdin.write("\n")

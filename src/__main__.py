@@ -24,10 +24,10 @@ try:
         f.write(f"Root Foil,{sys.argv[1]},Tips Foil,{sys.argv[2]}\n")
         f.write(",CL,,,,,,,,,,,,,,,CD,,,,,,,,,,,,,,,Cm,,,,,,,,,,,,,,,CL/CD\n")
         f.write(
-            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,√|a|,a/ReCL"
-            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,√|a|,a/ReCL"
-            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,√|a|,a/ReCL"
-            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,√|a|,a/ReCL\n"
+            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL"
+            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL"
+            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL"
+            ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL\n"
         )
 
         for i in range(11):
@@ -35,10 +35,10 @@ try:
             df_analysis = xfoil.analyze(df_foil, 5.0, 10.0, 0.5, 200000.0, 300000.0, 100000.0)
             df_coefficient = fit_alpha_re_15(df_analysis)
             f.write(f"{i/10.0},")
-            df_coefficient["CL":"CL"].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
-            df_coefficient["CD":"CD"].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
-            df_coefficient["CM":"CM"].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
-            df_coefficient["CL/CD":"CL/CD"].to_csv(f, header=False, index=False, mode="a")
+            df_coefficient.loc[["CL"], :].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
+            df_coefficient.loc[["CD"], :].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
+            df_coefficient.loc[["CM"], :].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
+            df_coefficient.loc[["CL/CD"], :].to_csv(f, header=False, index=False, mode="a")
             print(f"* {i} finish")
 except Exception as e:
     print(e)
