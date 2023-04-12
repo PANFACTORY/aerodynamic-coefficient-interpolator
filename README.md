@@ -47,6 +47,8 @@ RE_MAX=700000
 RE_STEP=100000
 ```
 
+`.env`ファイルはリポジトリのルートディレクトリか`interpolator.exe`と同じディレクトリに配置してください。
+
 ## 依存関係
 ### プログラム
 - [XFoil](https://web.mit.edu/drela/Public/web/xfoil/)
