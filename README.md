@@ -12,6 +12,8 @@
 $ interpolator path/to/root_foil.dat path/to/tips_foil.dat path/to/out.csv
 ```
 
+プログラムが正常に動作すると以下の様な出力が表示され、空力係数補間関数の係数がファイルに出力されます。
+
 実行時引数の意味は以下の通りです。
 
 |引数|意味|
