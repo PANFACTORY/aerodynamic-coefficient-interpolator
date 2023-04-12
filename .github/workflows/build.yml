@@ -22,6 +22,8 @@ jobs:
       - name: Build executable with PyInstaller
         run: pyinstaller --onefile --name interpolator.exe src/__main__.py
 
+      - run: dir ./dist/
+
       - name: Upload executable
         uses: actions/upload-release-asset@v1
         env:
