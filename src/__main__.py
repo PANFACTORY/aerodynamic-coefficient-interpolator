@@ -1,11 +1,13 @@
 """エントリポイント."""
 import os
+import traceback
 
 import click
 from dotenv import load_dotenv
 
 from src.apploximate_function import fit_alpha_re_15
-from src.xfoil_wrapper import XFoilWrapper
+from src.interpolation_coefficient_repository import InterpolationCoefficientRepository
+from src.xfoil_api import XFoilApi
 
 load_dotenv()
 
@@ -37,7 +39,6 @@ def main(root_foil_name: str, tips_foil_name: str, output_file_name: str) -> Non
     try:
         click.echo("----------Program start----------")
 
-        xfoil = XFoilWrapper(os.getenv("XFOIL_PATH", DEFAULT_XFOIL_PATH))
         partition = int(os.getenv("PARTITION", DEFAULT_PARTITION))
         alpha_min = float(os.getenv("ALPHA_MIN", DEFAULT_ALPHA_MIN))
         alpha_max = float(os.getenv("ALPHA_MAX", DEFAULT_ALPHA_MAX))
@@ -46,33 +47,26 @@ def main(root_foil_name: str, tips_foil_name: str, output_file_name: str) -> Non
         re_max = float(os.getenv("RE_MAX", DEFAULT_RE_MAX))
         re_step = float(os.getenv("RE_STEP", DEFAULT_RE_STEP))
 
-        df_foil_root = XFoilWrapper.load_foil(root_foil_name)
-        df_foil_tips = XFoilWrapper.load_foil(tips_foil_name)
+        api = XFoilApi(os.getenv("XFOIL_PATH", DEFAULT_XFOIL_PATH))
 
-        with open(output_file_name, "w", newline="") as f:
-            f.write(f"Root Foil,{root_foil_name},Tips Foil,{tips_foil_name}\n")
-            f.write(",CL,,,,,,,,,,,,,,,CD,,,,,,,,,,,,,,,Cm,,,,,,,,,,,,,,,CL/CD\n")
-            f.write(
-                ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL"
-                ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL"
-                ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL"
-                ",1,a,a^2,a^3,a^4,a^5,a^6,ReCL,ReCL^2,ReCL^3,ReCL^4,ReCL^5,1/logReCL,sqrt|a|,a/ReCL\n"
-            )
+        df_foil_root = XFoilApi.load_foil(root_foil_name)
+        df_foil_tips = XFoilApi.load_foil(tips_foil_name)
 
-            with click.progressbar(range(partition + 1)) as bar:
-                for i in bar:
-                    df_foil = xfoil.mix(df_foil_root, df_foil_tips, i / float(partition))
-                    df_analysis = xfoil.analyze(df_foil, alpha_min, alpha_max, alpha_step, re_min, re_max, re_step)
-                    df_coefficient = fit_alpha_re_15(df_analysis)
-                    f.write(f"{100*i/float(partition)},")
-                    df_coefficient.loc[["CL"], :].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
-                    df_coefficient.loc[["CD"], :].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
-                    df_coefficient.loc[["CM"], :].to_csv(f, header=False, index=False, mode="a", lineterminator=",")
-                    df_coefficient.loc[["CL/CD"], :].to_csv(f, header=False, index=False, mode="a")
+        repository = InterpolationCoefficientRepository(output_file_name)
+        repository.set_foil_name(root_foil_name, tips_foil_name)
+
+        with click.progressbar(range(partition + 1)) as bar:
+            for i in bar:
+                ratio = i / float(partition)
+                df_foil = api.mix(df_foil_root, df_foil_tips, ratio)
+                df_analysis = api.analyze(df_foil, alpha_min, alpha_max, alpha_step, re_min, re_max, re_step)
+                df_coefficient = fit_alpha_re_15(df_analysis)
+                repository.set_aerodynamic_coefficient(ratio, df_coefficient)
 
         click.echo(click.style("Successfully.", fg="green"))
     except Exception as e:
-        click.echo(click.style(f"Error. :{e}", fg="red"))
+        click.echo(click.style(f"{e.__class__.__name__}: {e}", fg="red"))
+        click.echo(traceback.format_exc(), err=True)
     finally:
         click.echo("-----------Program end-----------")
 
