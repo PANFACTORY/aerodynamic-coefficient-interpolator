@@ -58,6 +58,8 @@ RE_STEP=100000
 ### Pythonパッケージ
 - [pandas](https://pandas.pydata.org/)
 - [numpy](https://numpy.org/)
+- [python-dotenv](https://github.com/theskumar/python-dotenv)
+- [click](https://github.com/pallets/click)
 
 ## ライセンス
 - [BSD 3](LICENSE)
