@@ -28,6 +28,9 @@ jobs:
       - name: Build executable with PyInstaller
         run: pyinstaller --onefile --name interpolator.exe src/__main__.py
 
+      - name: Check version
+        run: dist/interpolator.exe --version
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
