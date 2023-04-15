@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - id: get_version
+        uses: battila7/get-version-action@v2
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -28,8 +31,11 @@ jobs:
       - name: Build executable with PyInstaller
         run: pyinstaller --onefile --name interpolator.exe src/__main__.py
 
-      - name: Check version
-        run: dist/interpolator.exe --version
+      - name: Store version in code
+        id: code_version
+        run: |
+          dist/interpolator.exe --version
+          echo ${{ steps.get_version.outputs.version-without-v }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
