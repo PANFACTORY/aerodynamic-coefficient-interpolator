@@ -5,13 +5,12 @@ import traceback
 import click
 from dotenv import load_dotenv
 
+from src._version import VERSION
 from src.apploximate_function import fit_alpha_re_15
 from src.interpolation_coefficient_repository import InterpolationCoefficientRepository
 from src.xfoil_api import XFoilApi
 
 load_dotenv()
-
-VERSION = "1.0.0"
 
 DEFAULT_XFOIL_PATH = "./xfoil.exe"
 DEFAULT_PARTITION = 10
