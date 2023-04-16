@@ -14,10 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - id: get_version
+        uses: battila7/get-version-action@v2
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
+
+      - name: Create _version.py file
+        run: echo 'VERSION = "${{ steps.get_version.outputs.version-without-v }}"' >> src/_version.py
 
       - name: Install dependencies
         run: pip install -r requirements.txt

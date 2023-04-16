@@ -1,4 +1,4 @@
-"""XFoilラッパークラスモジュール."""
+"""XFoil APIクラスモジュール."""
 import os
 from subprocess import DEVNULL, PIPE, Popen
 from tempfile import TemporaryDirectory
@@ -6,8 +6,8 @@ from tempfile import TemporaryDirectory
 from pandas import DataFrame, concat, read_csv
 
 
-class XFoilWrapper:
-    """XFoilラッパークラス."""
+class XFoilApi:
+    """XFoil APIクラス."""
 
     def __init__(self, xfoil_path: str) -> None:
         """コンストラクタ.
@@ -35,7 +35,7 @@ class XFoilWrapper:
             DataFrame: 迎角毎の空力係数のデータフレーム
         """
         with TemporaryDirectory() as td:
-            XFoilWrapper.dump_foil(os.path.join(td, "foil.dat"), "", df_foil)
+            XFoilApi.dump_foil(os.path.join(td, "foil.dat"), "", df_foil)
 
             df_result = DataFrame(data=[], columns=["alpha", "Re", "CL", "CD", "CDp", "CM", "Top_Xtr", "Bot_Xtr"])
 
@@ -91,8 +91,8 @@ class XFoilWrapper:
             DataFrame: 翼型座標データのデータフレーム
         """
         with TemporaryDirectory() as td:
-            XFoilWrapper.dump_foil(os.path.join(td, "foil_root.dat"), "", df_foil_root)
-            XFoilWrapper.dump_foil(os.path.join(td, "foil_tips.dat"), "", df_foil_tips)
+            XFoilApi.dump_foil(os.path.join(td, "foil_root.dat"), "", df_foil_root)
+            XFoilApi.dump_foil(os.path.join(td, "foil_tips.dat"), "", df_foil_tips)
 
             xfoil = Popen(self.__xfoil_path, stdin=PIPE, stdout=DEVNULL, stderr=DEVNULL, text=True)
             if xfoil.stdin is None:
@@ -110,7 +110,7 @@ class XFoilWrapper:
             xfoil.stdin.close()
             xfoil.wait()
 
-            return XFoilWrapper.load_foil(os.path.join(td, "out.dat"))
+            return XFoilApi.load_foil(os.path.join(td, "out.dat"))
 
     @staticmethod
     def load_foil(file_name: str) -> DataFrame:
