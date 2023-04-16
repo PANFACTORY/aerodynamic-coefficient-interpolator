@@ -24,9 +24,9 @@ jobs:
 
       - name: Create _version.py file
         run: |
-          echo "VERSION = \"" >> src/_version.py
-          echo ${{ steps.get_version.outputs.version-without-v }} >> src/_version.py
-          echo "\"" >> src/_version.py
+          echo | set /p='VERSION = \"' >> src/_version.py
+          echo | set /p=${{ steps.get_version.outputs.version-without-v }} >> src/_version.py
+          echo | set /p='"' >> src/_version.py
           type src/_version.py
 
       - name: Install dependencies
