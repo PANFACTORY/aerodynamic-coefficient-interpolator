@@ -1,28 +1,30 @@
 # aerodynamic-coefficient-interpolator
-空力係数補間プログラム
+空力係数補間プログラム  
+[![Build](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/actions/workflows/build.yml/badge.svg)](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/actions/workflows/build.yml) 
+[![Python CI](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/actions/workflows/python-ci.yml/badge.svg)](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/actions/workflows/python-ci.yml)
 
-## セットアップ
+## 使用方法
+### セットアップ
 事前に`XFoil`をインストールしておいてください。  
-[リリースページ](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/releases)から`interpolator.exe`をダウンロードしてください。
+[リリースページ](https://github.com/PANFACTORY/aerodynamic-coefficient-interpolator/releases)から`interpolator.exe`をダウンロードしてください。  
 
-## 実行方法
+### 実行方法
 以下のコマンドを実行してください。
 
 ```
-$ interpolator path/to/root_foil.dat path/to/tips_foil.dat path/to/out.csv
+$ interpolator "翼根翼型ファイル名" "翼端翼型ファイル名" "出力ファイル名"
 ```
 
-プログラムが正常に動作すると以下の様な出力が表示され、空力係数補間関数の係数がファイルに出力されます。
+プログラムが正常に動作すると以下の様な出力が表示され、空力係数補間関数の係数が`csv`形式でファイルに出力されます。
 
-実行時引数の意味は以下の通りです。
+```
+----------Program start----------
+  [####################################]  100%
+Successfully.
+-----------Program end-----------
+```
 
-|引数|意味|
-|:--:|:--:|
-|path/to/root_foil.dat|翼根翼型ファイル名|
-|path/to/tips_foil.dat|翼端翼型ファイル名|
-|path/to/out.csv|出力ファイル名|
-
-## 環境変数
+### 環境変数
 パラメータは環境変数で指定できます。  
 
 |環境変数名|意味|デフォルト値|
@@ -50,6 +52,31 @@ RE_STEP=100000
 ```
 
 `.env`ファイルはリポジトリのルートディレクトリか`interpolator.exe`と同じディレクトリに配置してください。
+
+## 開発者向け情報
+### セットアップ
+リポジトリをクローンした後、`src`ディレクトリに以下の内容で`_version.py`という名前のファイルを作成してください。
+
+```python
+VERSION = "develop version"
+```
+
+リポジトリ直下のディレクトリに`xfoil.exe`を配置してください。  
+`requirements.txt`を用いて依存ライブラリをインストールしてください。  
+
+### 実行方法
+[Visual Studio Code](https://code.visualstudio.com/)を利用する場合は  
+
+```
+実行とデバッグ > Python: interpolator
+```
+
+で実行できます。  
+コマンドラインで実行する際にはリポジトリ直下のディレクトリで以下を実行してください。
+
+```
+python -m src "翼根翼型ファイル名" "翼端翼型ファイル名" "出力ファイル名"
+```
 
 ## 依存関係
 ### プログラム
