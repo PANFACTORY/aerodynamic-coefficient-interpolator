@@ -6,7 +6,7 @@ import click
 from dotenv import load_dotenv
 
 from src._version import VERSION
-from src.apploximate_function import fit_alpha_re_15
+from src.apploximate_function import AlphaRe15
 from src.interpolation_coefficient_repository import InterpolationCoefficientRepository
 from src.xfoil_api import XFoilApi
 
@@ -59,8 +59,8 @@ def main(root_foil_name: str, tips_foil_name: str, output_file_name: str) -> Non
                 ratio = i / float(partition)
                 df_foil = api.mix(df_foil_root, df_foil_tips, ratio)
                 df_analysis = api.analyze(df_foil, alpha_min, alpha_max, alpha_step, re_min, re_max, re_step)
-                df_coefficient = fit_alpha_re_15(df_analysis)
-                repository.set_aerodynamic_coefficient(ratio, df_coefficient)
+                model = AlphaRe15(df_analysis)
+                repository.set_aerodynamic_coefficient(ratio, model.df_coefficient)
 
         click.echo(click.style("Successfully.", fg="green"))
     except Exception as e:
