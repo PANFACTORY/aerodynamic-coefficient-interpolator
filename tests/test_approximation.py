@@ -1,5 +1,3 @@
-import math
-
 from src.approximate_function import AlphaRe15
 from src.xfoil_api import XFoilApi
 
@@ -13,5 +11,5 @@ def test_approximation() -> None:
     re = 530000.0
     df_analysis_check = api.analyze(df_foil, 0.0, 10.0, 1.0, re, re, 1.0)
     df_predict = model.predict(df_analysis_check[["alpha", "Re"]])
-    error = math.sqrt(pow(df_predict["CL"] - df_analysis_check["CL"], 2).sum())
-    assert error < 0.05
+    mse = pow(df_predict["CL"] - df_analysis_check["CL"], 2).mean()
+    assert mse < 1e-4
