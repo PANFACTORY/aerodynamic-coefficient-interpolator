@@ -1,10 +1,10 @@
 import math
 
-from src.apploximate_function import AlphaRe15
+from src.approximate_function import AlphaRe15
 from src.xfoil_api import XFoilApi
 
 
-def test_apploximation() -> None:
+def test_approximation() -> None:
     df_foil = XFoilApi.load_foil("./tests/DAE21.dat")
     api = XFoilApi("./xfoil.exe")
     df_analysis = api.analyze(df_foil, 0.0, 10.0, 0.5, 200000.0, 700000.0, 50000.0)

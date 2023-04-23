@@ -6,7 +6,7 @@ import click
 from dotenv import load_dotenv
 
 from src._version import VERSION
-from src.apploximate_function import AlphaRe15
+from src.approximate_function import AlphaRe15
 from src.interpolation_coefficient_repository import InterpolationCoefficientRepository
 from src.xfoil_api import XFoilApi
 
