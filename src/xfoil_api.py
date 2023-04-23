@@ -50,7 +50,7 @@ class XFoilApi:
                 xfoil.stdin.write("\n")
                 xfoil.stdin.write(f'load {os.path.join(td, "foil.dat")}\n')
                 xfoil.stdin.write("oper\n")
-                xfoil.stdin.write("iter 100\n")
+                xfoil.stdin.write("iter 500\n")
                 xfoil.stdin.write("Type 3\n")
                 xfoil.stdin.write("visc\n")
                 xfoil.stdin.write(f"{re}\n")

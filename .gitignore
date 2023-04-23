@@ -130,3 +130,9 @@ dmypy.json
 
 # Version
 src/_version.py
+
+# XFoil.exe
+xfoil.exe
+
+# AirFoil
+tests/*.dat
